@@ -1,11 +1,12 @@
-#ifndef __MIN_SUM_CHAIN_H__
-#define __MIN_SUM_CHAIN_H__
+#ifndef __POWER_MODULE_HH__
+#define __POWER_MODULE_HH__
 
 /*
 File:        min_sum_chain.cpp
 Description: Implementation to find the minimum sum chain.
 Created:     2021-06-09 11:01:09
-Author:      stbrumme
+Author:      José Vilca Campana <@marcusmors>
+Mail:        alivezeh@gmail.com
 
 // code from stbrumme for euler's problem 122: https://euler.stephan-brumme.com/122/
 // repository https://github.com/stbrumme/euler/blob/master/euler-0122.cpp
@@ -34,12 +35,17 @@ using namespace NTL;
 // a single addition chain
 typedef std::vector<unsigned int> Chain;
 
-// iterative depth-first search of Brauer sequence
-bool search(Chain &, unsigned, unsigned);
+class PowerModule
+{
+private:
+	// iterative depth-first search of Brauer sequence
+	bool search(Chain &, unsigned, unsigned);
 
-// increase depth until a solution is found
-Chain findChain(unsigned int exponent);
+	// increase depth until a solution is found
+	Chain findChain(unsigned int exponent);
 
-ZZ empower(ZZ, unsigned);
+public:
+	ZZ empower(ZZ, unsigned);
+};
 
-#endif // __MIN_SUM_CHAIN_H__
+#endif // __POWER_MODULE_HH__

@@ -2,7 +2,8 @@
 File:        min_sum_chain.cpp
 Description: Implementation to find the minimum sum chain.
 Created:     2021-06-09 11:01:09
-Author:      stbrumme
+Author:      José Vilca Campana <@marcusmors>
+Mail:        alivezeh@gmail.com
 
 // code from stbrumme for euler's problem 122: https://euler.stephan-brumme.com/122/
 // repository https://github.com/stbrumme/euler/blob/master/euler-0122.cpp
@@ -22,7 +23,7 @@ You should have received a copy of the GNU General Public License
 along with Exponenciacion_modular.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "min_sum_chain.h"
+#include "power_module.hpp"
 #include <vector>
 #include <map>
 #include <NTL/ZZ.h>
@@ -31,7 +32,7 @@ using namespace std;
 using namespace NTL;
 
 // iterative depth-first search of Brauer sequence
-bool search(Chain &chain, unsigned int exponent, unsigned int maxDepth)
+bool MOD::PowerModule::search(Chain &chain, unsigned exponent, unsigned maxDepth)
 {
 	// too deep ?
 	if (chain.size() > maxDepth)
@@ -56,7 +57,7 @@ bool search(Chain &chain, unsigned int exponent, unsigned int maxDepth)
 }
 
 // increase depth until a solution is found
-Chain findChain(unsigned int exponent)
+MOD::Chain MOD::PowerModule::findChain(unsigned int exponent)
 {
 	// cached ? (needed for Hackerrank only)
 	static std::map<unsigned int, Chain> cache;
@@ -83,7 +84,7 @@ Chain findChain(unsigned int exponent)
 	return chain;
 }
 
-ZZ empower(ZZ base, unsigned exponent)
+ZZ MOD::PowerModule::empower(ZZ base, unsigned exponent)
 {
 	auto chain = findChain(exponent);
 	ZZ resultChain[chain.size()] = {base, base * base};
