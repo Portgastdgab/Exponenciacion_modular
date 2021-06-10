@@ -1,0 +1,5 @@
+// the configured options and settings for Tutorial
+// Configure a header file to pass the version number to the source code:
+// When CMake configures this header file the values for @Mod_VERSION_MAJOR@ and @Mod_VERSION_MINOR@ will be replaced.
+#define Tutorial_VERSION_MAJOR @Tutorial_VERSION_MAJOR @
+#define Tutorial_VERSION_MINOR @Tutorial_VERSION_MINOR @
