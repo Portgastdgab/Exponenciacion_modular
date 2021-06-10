@@ -56,7 +56,7 @@ void right_to_left_binary(ZZ b, ZZ e, ZZ mod){
             S = S * S;
         }
     }
-    cout<<module(A, mod)<<endl;
+    cout<<A;
 }
 
 void left_to_right_binary(ZZ b, ZZ e, ZZ mod){
@@ -85,6 +85,6 @@ int main()
     ZZ base(572);
     ZZ expo(29);
     ZZ mod(713);
-    NaiveExponentiation(base, expo, mod);
+    right_to_left_binary(base, expo, mod);
 
 }
