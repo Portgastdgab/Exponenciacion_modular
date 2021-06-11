@@ -33,23 +33,23 @@ using namespace NTL;
 using namespace std;
 
 // a single addition chain
-typedef std::vector<unsigned int> Chain;
+typedef std::vector<ZZ> Chain;
 
 class PowerModule
 {
 private:
 	// iterative depth-first search of Brauer sequence
-	bool search(Chain &, unsigned, unsigned);
+	bool search(Chain &, ZZ, unsigned int);
 
 	// increase depth until a solution is found
-	Chain findChain(unsigned int exponent);
+	Chain findChain(ZZ exponent);
 
 public:
-	ZZ empower(ZZ, unsigned);
+	ZZ empower(ZZ, ZZ);
 };
 
 // iterative depth-first search of Brauer sequence
-bool PowerModule::search(Chain &chain, unsigned exponent, unsigned maxDepth)
+bool PowerModule::search(Chain &chain, ZZ exponent, unsigned int maxDepth)
 {
 	// too deep ?
 	if (chain.size() > maxDepth)
@@ -74,10 +74,10 @@ bool PowerModule::search(Chain &chain, unsigned exponent, unsigned maxDepth)
 }
 
 // increase depth until a solution is found
-Chain PowerModule::findChain(unsigned int exponent)
+Chain PowerModule::findChain(ZZ exponent)
 {
 	// cached ? (needed for Hackerrank only)
-	static std::map<unsigned int, Chain> cache;
+	static std::map<ZZ, Chain> cache;
 	auto lookup = cache.find(exponent);
 	if (lookup != cache.end())
 		return lookup->second;
@@ -88,7 +88,7 @@ Chain PowerModule::findChain(unsigned int exponent)
 	while (true)
 	{
 		// reset chain
-		chain = {1};
+		chain = {ZZ(1)};
 		// a start search
 		if (search(chain, exponent, depth))
 			break;
@@ -101,7 +101,7 @@ Chain PowerModule::findChain(unsigned int exponent)
 	return chain;
 }
 
-ZZ PowerModule::empower(ZZ base, unsigned exponent)
+ZZ PowerModule::empower(ZZ base, ZZ exponent)
 {
 	auto chain = findChain(exponent);
 	ZZ resultChain[chain.size()] = {base, base * base};
@@ -109,7 +109,7 @@ ZZ PowerModule::empower(ZZ base, unsigned exponent)
 	{
 		auto sum = chain[i];
 		const unsigned exp1_index = i - 1;
-		const unsigned exp2 = sum - chain[exp1_index];
+		const ZZ exp2 = ZZ(sum - chain[exp1_index]);
 		unsigned exp2_index;
 		for (unsigned j = 0; j < chain.size(); j++)
 			if (exp2 == chain[j])
@@ -128,6 +128,9 @@ ZZ PowerModule::empower(ZZ base, unsigned exponent)
 
 int main()
 {
-	cout << PowerModule().empower() << endl;
+	ZZ base = ZZ(197564123456785645645675645345675645679);
+	ZZ exponent = ZZ(277897456412375674564126789756456378975);
+
+	cout << PowerModule().empower(base, exponent) << endl;
 	return 0;
 }
