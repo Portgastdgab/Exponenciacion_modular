@@ -21,7 +21,20 @@ ZZ module(ZZ a, ZZ n){
     return r;
 }
 
-void rapida(ZZ b, ZZ e, ZZ m)
+ZZ fast(ZZ a,ZZ p,ZZ n){
+    ZZ t;
+    if(p == 0) return ZZ(1);
+    if((p&1)==0){
+        t = fast(a,p>>1,n);
+        return module(t*t,n);
+    }
+    t = fast(a,(p-1)>>1,n);
+    return module(a *module(t*t,n),n);
+
+
+}
+
+void binary(ZZ b, ZZ e, ZZ m)
 {
 	ZZ result = (e & 1)==1 ? b : ZZ(1);
 	while (e != 0) {
@@ -31,17 +44,6 @@ void rapida(ZZ b, ZZ e, ZZ m)
 			result = module((result * b), m);
 	}
 	cout<<result;
-}
-
-void binary(ZZ a,ZZ b, ZZ mod) {
-	ZZ res(1);
-    while (b > 0) {
-        if ((b & 1)==1)
-            res = module(res * a, mod);
-        a = a * a;
-        b >>= 1;
-    }
-    cout<<res;
 }
 
 void right_to_left_binary(ZZ b, ZZ e, ZZ mod){
@@ -82,9 +84,15 @@ void NaiveExponentiation (ZZ b, ZZ e, ZZ mod){
 int main()
 {
 
-    ZZ base(572);
-    ZZ expo(29);
-    ZZ mod(713);
-    binary(base, expo, mod);
+    ZZ base = conv <ZZ> ("197564123456785645645675645345675645679");
+    ZZ expo = conv <ZZ> ("277897456412375674564126789756456378975");
+    ZZ mod = conv <ZZ> ("245678641237897897564567897456456123458");
+
+    fast(base, expo, mod);
+    //binary(base, expo, mod);
+    //right_to_left_binary(base, expo, mod);
+    //left_to_right_binary(base, expo, mod);
+    //NaiveExponentiation(base, expo, mod);
+    //484216375
 
 }
