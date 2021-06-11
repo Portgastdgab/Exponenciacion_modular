@@ -25,25 +25,109 @@ along with Exponenciacion_modular.  If not, see <https://www.gnu.org/licenses/>.
 #include <iostream>
 #include <string>
 
-#include "TutorialConfig.h"
+#include <vector>
+#include <map>
+#include <NTL/ZZ.h>
 
-int main(int argc, char *argv[])
+using namespace NTL;
+using namespace std;
+
+// a single addition chain
+typedef std::vector<unsigned int> Chain;
+
+class PowerModule
 {
-	if (argc < 2)
+private:
+	// iterative depth-first search of Brauer sequence
+	bool search(Chain &, unsigned, unsigned);
+
+	// increase depth until a solution is found
+	Chain findChain(unsigned int exponent);
+
+public:
+	ZZ empower(ZZ, unsigned);
+};
+
+// iterative depth-first search of Brauer sequence
+bool PowerModule::search(Chain &chain, unsigned exponent, unsigned maxDepth)
+{
+	// too deep ?
+	if (chain.size() > maxDepth)
+		return false;
+
+	auto last = chain.back();
+	for (size_t i = 0; i < chain.size(); i++)
 	{
-		// report version
-		std::cout << argv[0] << " Version " << Tutorial_VERSION_MAJOR << "."
-				  << Tutorial_VERSION_MINOR << std::endl;
-		std::cout << "Usage: " << argv[0] << " number" << std::endl;
-		return 1;
+		//auto sum = chain[i] + last;
+		auto sum = chain[chain.size() - 1 - i] + last; // try high exponents first => about twice as fast
+		if (sum == exponent)
+			return true;
+
+		chain.push_back(sum);
+		if (search(chain, exponent, maxDepth))
+			return true;
+
+		chain.pop_back();
 	}
 
-	// convert input to double
-	const double inputValue = std::stod(argv[1]);
+	return false;
+}
 
-	// calculate square root
-	const double outputValue = sqrt(inputValue);
-	std::cout << "The square root of " << inputValue << " is " << outputValue
-			  << std::endl;
+// increase depth until a solution is found
+Chain PowerModule::findChain(unsigned int exponent)
+{
+	// cached ? (needed for Hackerrank only)
+	static std::map<unsigned int, Chain> cache;
+	auto lookup = cache.find(exponent);
+	if (lookup != cache.end())
+		return lookup->second;
+
+	// start iterative search
+	Chain chain;
+	unsigned int depth = 1;
+	while (true)
+	{
+		// reset chain
+		chain = {1};
+		// a start search
+		if (search(chain, exponent, depth))
+			break;
+
+		// failed, allow to go one step deeper
+		depth++;
+	}
+
+	cache[exponent] = chain;
+	return chain;
+}
+
+ZZ PowerModule::empower(ZZ base, unsigned exponent)
+{
+	auto chain = findChain(exponent);
+	ZZ resultChain[chain.size()] = {base, base * base};
+	for (unsigned i = 2; i < chain.size(); i++)
+	{
+		auto sum = chain[i];
+		const unsigned exp1_index = i - 1;
+		const unsigned exp2 = sum - chain[exp1_index];
+		unsigned exp2_index;
+		for (unsigned j = 0; j < chain.size(); j++)
+			if (exp2 == chain[j])
+			{
+				exp2_index = j;
+				break;
+			}
+
+		ZZ mult1 = resultChain[exp1_index];
+		ZZ mult2 = resultChain[exp2_index];
+		resultChain[i] = mult1 * mult2;
+		// resultChain[i] = resultChain[i-1] * resultChain[resultChain[i-1]]
+	}
+	return resultChain[chain.size() - 1];
+}
+
+int main()
+{
+	cout << PowerModule().empower() << endl;
 	return 0;
 }
